@@ -26,6 +26,14 @@ varnish v1 -vcl+backend {
 
 		var.set_ip("ip1", client.ip);
 		set resp.http.ip1 = var.get_ip("ip1");
+
+		var.set("e1", "e1");
+		if (var.exists("e1")) {
+			set resp.http.e1 = "exists";
+		}
+		if (! var.exists("e2")) {
+			set resp.http.e2 = "not exists";
+		}
 	}
 } -start
 
@@ -38,6 +46,8 @@ client c1 {
 	expect resp.http.r1 == "2.000"
 	expect resp.http.d1 == "60.000"
 	expect resp.http.ip1 == "127.0.0.1"
+	expect resp.http.e1 == "exists"
+	expect resp.http.e2 == "not exists"
 }
 
 client c1 -run

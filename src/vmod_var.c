@@ -285,3 +285,15 @@ vmod_global_get(const struct vrt_ctx *ctx, VCL_STRING name)
 	AZ(pthread_mutex_unlock(&var_list_mtx));
 	return(r);
 }
+
+VCL_BOOL
+vmod_exists(const struct vrt_ctx *ctx, struct vmod_priv *priv, VCL_STRING name)
+{
+	struct var *v;
+	if (name == NULL)
+		return (0);
+	v = vh_get_var(get_vh(priv), name);
+	if (!v)
+		return (0);
+	return (1);
+}
