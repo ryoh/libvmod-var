@@ -1,0 +1,34 @@
+varnishtest "Test var vmod"
+
+server s1 {
+       rxreq
+       txresp
+} -start
+
+varnish v1 -vcl+backend {
+	import var from "${vmod_topbuild}/src/.libs/libvmod_var.so";
+
+	backend be1 {
+		.host = "${s1_addr}";
+		.port = "${s1_port}";
+	}
+
+	sub vcl_recv {
+		var.set_backend("be1", be1);
+		set req.backend_hint = var.get_backend("be1");
+	}
+
+	sub vcl_backend_response {
+		if (bereq.backend == be1) {
+			set beresp.http.be1 = "backend be1";
+		}
+	}
+} -start
+
+client c1 {
+	txreq -url "/"
+	rxresp
+	expect resp.http.be1 == "backend be1"
+}
+
+client c1 -run
