@@ -1,7 +1,7 @@
 Summary: Variable VMOD for Varnish
 Name: vmod-var
 Version: 0.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: BSD
 Group: System Environment/Daemons
 Source0: libvmod-var.tar.gz
@@ -16,9 +16,10 @@ BuildRequires: varnish-libs-devel >= 4.0.2
 Variables for Varnish
 
 %prep
-%setup -n libvmod-var-%{version}
+%setup -n libvmod-var
 
 %build
+./autogen.sh
 %configure --prefix=/usr/
 make
 make check
@@ -39,5 +40,8 @@ rm -rf %{buildroot}
 %{_mandir}/man?/*
 
 %changelog
+* Thu Nov 26 2015 Ryoh Kawai <kawairyoh@gmail.com> - 0.1-2
+- Add backend var.set and var.get method.
+
 * Tue Apr 30 2013 Tollef Fog Heen <tfheen@varnish-software.com> - 0.1-1
 - Initial version.
